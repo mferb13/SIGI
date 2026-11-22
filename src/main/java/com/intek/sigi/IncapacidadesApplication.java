@@ -1,4 +1,4 @@
-package com.example.incapacidades;
+package com.intek.sigi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
