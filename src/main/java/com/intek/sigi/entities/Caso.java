@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 @Table(name = "caso")
@@ -57,6 +59,10 @@ public class Caso {
 
     @Column(name = "codigo_tipo_novedad", nullable = false, length = 30)
     private String codigoTipoNovedad;
+
+    @ManyToOne
+    @JoinColumn(name = "id_colaborador", nullable = false)
+    private Colaborador colaborador;
 
     public Caso() {
     }
@@ -171,5 +177,12 @@ public class Caso {
 
     public void setCodigoTipoNovedad(String codigoTipoNovedad) {
         this.codigoTipoNovedad = codigoTipoNovedad;
+    }
+    public Colaborador getColaborador() {
+        return colaborador;
+    }
+
+    public void setColaborador(Colaborador colaborador) {
+        this.colaborador = colaborador;
     }
 }

@@ -5,6 +5,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name = "incapacidad")
@@ -13,6 +16,11 @@ public class Incapacidad {
     @Id
     @Column(name = "id_caso")
     private Long idCaso;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id_caso")
+    private Caso caso;
 
     @Column(name = "origen", nullable = false, length = 30)
     private String origen;
@@ -45,5 +53,12 @@ public class Incapacidad {
 
     public void setEsProrroga(boolean esProrroga) {
         this.esProrroga = esProrroga;
+    }
+    public Caso getCaso() {
+        return caso;
+    }
+
+    public void setCaso(Caso caso) {
+        this.caso = caso;
     }
 }

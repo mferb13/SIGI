@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión | INTEK Salud</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #dcecff, #f4f8ff);
+            color: #102b50;
+        }
+
+        .contenedor {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            gap: 60px;
+        }
+
+        .presentacion {
+            flex: 1;
+            max-width: 550px;
+            text-align: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .logo-icono {
+            font-size: 75px;
+            color: #1976c9;
+        }
+
+        .logo-texto h1 {
+            font-size: 52px;
+            color: #102b50;
+            letter-spacing: 2px;
+        }
+
+        .logo-texto h2 {
+            font-size: 20px;
+            color: #1976c9;
+        }
+
+        .presentacion h3 {
+            font-size: 25px;
+            line-height: 1.5;
+            font-weight: normal;
+            margin-bottom: 20px;
+        }
+
+        .presentacion p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #425b78;
+        }
+
+        .decoracion {
+            margin-top: 40px;
+            font-size: 100px;
+            color: #1976c9;
+            opacity: 0.35;
+        }
+
+        .panel-login {
+            width: 100%;
+            max-width: 550px;
+            background: rgba(255, 255, 255, 0.88);
+            padding: 55px 50px;
+            border-radius: 22px;
+            box-shadow: 0 15px 45px rgba(31, 82, 140, 0.12);
+        }
+
+        .panel-login h2 {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .subtitulo {
+            font-size: 18px;
+            color: #52657d;
+            margin-bottom: 40px;
+        }
+
+        .campo {
+            margin-bottom: 20px;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 18px;
+            border: 1px solid #cbd9e9;
+            border-radius: 11px;
+            font-size: 16px;
+            outline: none;
+            background: #f9fbff;
+        }
+
+        .campo input:focus {
+            border-color: #1976c9;
+            box-shadow: 0 0 0 3px rgba(25, 118, 201, 0.12);
+        }
+
+        .opciones {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin: 25px 0;
+            font-size: 14px;
+        }
+
+        .recordar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recordar input {
+            accent-color: #1976c9;
+            width: 17px;
+            height: 17px;
+        }
+
+        .opciones a {
+            color: #1769a9;
+            text-decoration: none;
+        }
+
+        .boton {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 11px;
+            background: #1976c9;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .boton:hover {
+            background: #125a9c;
+        }
+
+        .seguridad {
+            text-align: center;
+            color: #258568;
+            margin-top: 28px;
+            font-size: 15px;
+        }
+
+        .mensaje {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-size: 14px;
+        }
+
+        .error {
+            background: #ffe7e7;
+            color: #a32929;
+        }
+
+        .salida {
+            background: #e2f7ed;
+            color: #23734f;
+        }
+
+        @media (max-width: 850px) {
+            .contenedor {
+                flex-direction: column;
+                padding: 25px;
+                gap: 30px;
+            }
+
+            .presentacion {
+                max-width: 100%;
+            }
+
+            .logo-texto h1 {
+                font-size: 38px;
+            }
+
+            .logo-icono {
+                font-size: 55px;
+            }
+
+            .presentacion h3 {
+                font-size: 19px;
+            }
+
+            .decoracion {
+                display: none;
+            }
+
+            .panel-login {
+                padding: 35px 25px;
+            }
+
+            .panel-login h2 {
+                font-size: 29px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <section class="presentacion">
+
+        <div class="logo">
+            <div class="logo-icono">♡</div>
+
+            <div class="logo-texto">
+                <h1>INTEK</h1>
+                <h2>SALUD</h2>
+            </div>
+        </div>
+
+        <h3>Sistema de Gestión de Incapacidades y Licencias</h3>
+
+        <p>
+            Gestiona, controla y realiza seguimiento
+            a las incapacidades y licencias de tu equipo.
+        </p>
+
+        <div class="decoracion">✚</div>
+
+    </section>
+
+    <section class="panel-login">
+
+        <h2>Bienvenido a INTEK Salud</h2>
+
+        <p class="subtitulo">
+            Ingresa tus datos para continuar
+        </p>
+
+        <div th:if="${param.error}" class="mensaje error">
+            Usuario o contraseña incorrectos.
+        </div>
+
+        <div th:if="${param.logout}" class="mensaje salida">
+            Has cerrado sesión correctamente.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+
+            <div class="campo">
+                <input
+                        type="text"
+                        name="username"
+                        placeholder="Usuario o correo electrónico"
+                        autocomplete="username"
+                        required>
+            </div>
+
+            <div class="campo">
+                <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        placeholder="Contraseña"
+                        autocomplete="current-password"
+                        required>
+            </div>
+
+            <div class="opciones">
+
+                <label class="recordar">
+                    <input type="checkbox" name="remember-me">
+                    Recordar sesión
+                </label>
+
+                <a href="#" onclick="return false;">
+                    ¿Olvidaste tu contraseña?
+                </a>
+
+            </div>
+
+            <button type="submit" class="boton">
+                Iniciar sesión →
+            </button>
+
+        </form>
+
+        <div class="seguridad">
+            ♡ Acceso seguro a INTEK Salud
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+</html>

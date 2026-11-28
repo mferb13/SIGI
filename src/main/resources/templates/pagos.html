@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagos | SIGI</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg,#eaf1fa,#f5f8fd); color: #172b4d; }
+
+        .contenedor { display: flex; min-height: 100vh; }
+
+        /* SIDEBAR */
+        .sidebar { width: 235px; background: #f4f8fd; border-right: 1px solid #dce5f0; padding: 20px 12px; flex-shrink: 0; }
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #174b87;
+            padding: 0 12px 30px;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 12px;
+            color: #71839b;
+            font-weight: normal;
+        }
+        .menu a {
+            display: block;
+            padding: 13px 12px;
+            margin-bottom: 5px;
+            text-decoration: none;
+            color: #344966;
+            border-radius: 9px;
+            font-size: 15px;
+        }
+
+        .menu a:hover,
+        .menu a.activo {
+            background: #dcecff;
+            color: #1457a0;
+        }
+
+        .menu hr { border: none; border-top: 1px solid #dce5f0; margin: 10px 0; }
+        /* CONTENIDO */
+        .contenido { flex: 1; min-width: 0; }
+
+        /* BARRA SUPERIOR */
+        .barra-superior { height: 75px; background: #f7faff; border-bottom: 1px solid #dce5f0; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; gap: 20px; }
+        .buscador { width: 55%; padding: 12px 18px; border: 1px solid #c9d7e8; border-radius: 25px; font-size: 14px; background: #e9f0f9; }
+        .derecha { display: flex; align-items: center; gap: 22px; }
+        .notif { position: relative; font-size: 20px; color: #3b5675; }
+        .notif .badge { position: absolute; top: -8px; right: -10px; background: #e53935; color: white; font-size: 10px; width: 17px; height: 17px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .usuario { display: flex; align-items: center; gap: 10px; padding-left: 20px; border-left: 1px solid #dce5f0; font-size: 14px; font-weight: bold; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; background: #174b87; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .usuario span { display: block; color: #71839b; font-size: 12px; font-weight: normal; }
+
+        /* MAIN */
+        main { padding: 30px; }
+        .encabezado { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; margin-bottom: 18px; }
+        .encabezado h1 { font-size: 28px; color: #0f2a4d; margin-bottom: 4px; }
+        .encabezado p { color: #344966; }
+        .btn-agregar { background: #1560b8; color: white; padding: 13px 22px; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
+        .btn-agregar:hover { background: #10508f; }
+
+        /* RESUMEN */
+        .resumen { display: flex; align-items: stretch; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+        .resumen .item { background: #f7faff; border: 1px solid #dce5f0; border-radius: 12px; padding: 16px 18px; box-shadow: 0 3px 8px rgba(30,60,100,.05); min-width: 300px; }
+        .resumen .item span { display: block; font-size: 17px; color: #172b4d; }
+        .resumen .item strong { font-size: 36px; color: #0f2a4d; }
+        .resumen .item small { font-size: 18px; margin-left: 6px; }
+        .resumen .sube { color: #2e9e4f; }
+        .resumen .baja { color: #d62d2d; }
+        .resumen .conciliacion { margin-left: auto; align-self: center; background: #f7faff; border: 1px solid #dce5f0; border-radius: 12px; padding: 24px 20px; box-shadow: 0 3px 8px rgba(30,60,100,.05); }
+        .btn-conciliar { background: white; color: #174b87; border: 1px solid #174b87; padding: 10px 14px; border-radius: 7px; font-size: 15px; cursor: pointer; }
+        .btn-conciliar:hover { background: #dcecff; }
+
+        /* FILTROS */
+        .tarjeta { background: white; border: 1px solid #dce5f0; border-radius: 14px; padding: 14px; box-shadow: 0 3px 8px rgba(30,60,100,.05); }
+        .tarjeta-filtros { margin-bottom: 18px; }
+        .filtros { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .filtros select, .filtros input { padding: 11px 12px; border: 1px solid #c9d7e8; border-radius: 8px; font-size: 15px; background: #f7faff; }
+        .filtros .buscar-caso { width: 270px; }
+        .filtros .buscar-texto { flex: 1; min-width: 180px; border-radius: 20px; }
+        .btn-limpiar { background: white; color: #37516d; border: 1px solid #c9d7e8; padding: 11px 18px; border-radius: 7px; cursor: pointer; font-size: 15px; }
+        .btn-buscar { background: #1560b8; color: white; border: none; padding: 11px 20px; border-radius: 7px; font-weight: bold; cursor: pointer; font-size: 15px; }
+
+        /* TABLA */
+        .tabla-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 950px; }
+        th { text-align: left; font-size: 15px; padding: 14px 8px; background: #f4f8fd; }
+        td { padding: 13px 8px; font-size: 15px; border-bottom: 1px solid #e5edf6; }
+        tr:last-child td { border-bottom: none; }
+
+        .estado { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 14px; }
+        .estado.pagado { background: #bfe8c9; color: #1f6b38; }
+        .estado.conciliado { background: #bcd8f5; color: #1a4d85; }
+        .estado.diferencias { background: #fbe3a0; color: #7a5a00; }
+        .estado.pendiente { background: #fbe3a0; color: #7a5a00; }
+        .estado.rechazado { background: #f6b9b9; color: #8c1d1d; }
+
+        .acciones { display: flex; gap: 14px; }
+        .acciones button { border: none; background: none; color: #3b5675; cursor: pointer; font-size: 17px; }
+        .acciones button:hover { color: #1560b8; }
+
+        /* PAGINACIÓN */
+        .paginacion { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid #dce5f0; border-radius: 12px; padding: 14px 20px; margin-top: 18px; font-size: 15px; flex-wrap: wrap; gap: 10px; }
+        .paginas { display: flex; align-items: center; gap: 8px; }
+        .paginas a { text-decoration: none; color: #344966; padding: 6px 12px; border: 1px solid #dce5f0; border-radius: 6px; background: white; }
+        .paginas a.activo { background: #1a66d6; color: white; border-color: #1a66d6; }
+        .paginas a:hover:not(.activo) { background: #dcecff; }
+
+        @media (max-width: 700px) {
+            .contenedor { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .menu { display: flex; flex-wrap: wrap; }
+            .barra-superior { height: auto; padding: 15px; flex-wrap: wrap; }
+            .buscador { width: 100%; }
+            main { padding: 18px; }
+            .encabezado { flex-direction: column; }
+            .resumen .item { min-width: 0; width: 100%; }
+            .resumen .conciliacion { margin-left: 0; width: 100%; }
+            .filtros .buscar-caso { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div class="contenedor">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            ♥ INTEK
+            <span>SALUD | SIGI</span>
+        </div>
+        <nav class="menu">
+            <a href="/"><span class="ico"></span> Panel principal</a>
+            <a href="/casos"><span class="ico"></span> Casos</a>
+            <a href="/incapacidades"><span class="ico"></span> Incapacidades</a>
+            <a href="/licencias"><span class="ico"></span> Licencias</a>
+            <a href="/colaboradores"><span class="ico"></span> Colaboradores</a>
+            <a href="/documentos"><span class="ico"></span> Documentos</a>
+            <a href="/seguimiento"><span class="ico"></span> Seguimiento</a>
+            <a href="/gestion-cobros"><span class="ico"></span> Gestión de cobros</a>
+            <a href="/pagos" class="activo"><span class="ico"></span> Pagos</a>
+            <a href="conciliaciones"><span class="ico"></span> Conciliaciones</a>
+            <a href="alertas"><span class="ico"></span> Alertas</a>
+            <a href="reportes"><span class="ico"></span> Reportes</a>
+            <hr>
+            <a href="administracion"><span class="ico">≡</span> Administración</a>
+            <a href="configuracion"><span class="ico">⚙</span> Configuración</a>
+        </nav>
+    </aside>
+
+    <div class="contenido">
+
+        <!-- BARRA SUPERIOR -->
+        <header class="barra-superior">
+            <input type="search" class="buscador" placeholder="Buscar en INTEK Salud...">
+            <div class="derecha">
+                <div class="notif">✉<span class="badge">1</span></div>
+                <div class="notif">🔔<span class="badge">3</span></div>
+                <div class="usuario">
+                    <div class="avatar">MR</div>
+                    <div>María Rodríguez<span>Administradora</span></div>
+                    <span>⌄</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <header class="encabezado">
+                <div>
+                    <h1>Pagos</h1>
+                    <p>Lleva el control de los pagos recibidos y pendientes.</p>
+                </div>
+                <button class="btn-agregar">Registrar pago manual ＋</button>
+            </header>
+
+            <!-- RESUMEN -->
+            <div class="resumen">
+                <div class="item"><span>Total Pagado</span><strong>$1.875.450.000</strong><small class="sube">↗ 20</small></div>
+                <div class="item"><span>Pendiente por Pagar</span><strong>$210.980.000</strong><small class="baja">↘ 15</small></div>
+                <div class="conciliacion">
+                    <button class="btn-conciliar">Conciliación automática</button>
+                </div>
+            </div>
+
+            <!-- FILTROS -->
+            <div class="tarjeta tarjeta-filtros">
+                <form class="filtros">
+                    <input type="text" class="buscar-caso" placeholder="Buscar por caso o entidad...">
+                    <select>
+                        <option>Entidad</option>
+                        <option>EPS Sura</option>
+                        <option>Colfondos</option>
+                        <option>Compensar</option>
+                        <option>Sanitas</option>
+                    </select>
+                    <select>
+                        <option>Estado de pago</option>
+                        <option>Pagado</option>
+                        <option>Conciliado</option>
+                        <option>Con diferencias</option>
+                        <option>Pendiente</option>
+                        <option>Rechazado</option>
+                    </select>
+                    <input type="search" class="buscar-texto" placeholder="🔍">
+                    <button type="reset" class="btn-limpiar">Limpiar</button>
+                    <button type="submit" class="btn-buscar">Buscar</button>
+                </form>
+            </div>
+
+            <!-- TABLA -->
+            <div class="tarjeta tabla-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Número de pago</th>
+                        <th>Caso asociado</th>
+                        <th>Entidad pagadora</th>
+                        <th>Valor esperado</th>
+                        <th>Valor recibido</th>
+                        <th>Fecha de pago</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>P-0089</td><td>CASO-2026-0145</td><td>EPS Sura</td><td>$3.500.000</td><td>$3.500.000</td><td>25/10/2026</td>
+                        <td><span class="estado pagado">Pagado</span></td>
+                        <td class="acciones"><button title="Ver">👁</button><button title="Editar">✎</button><button title="Más">⋯</button></td>
+                    </tr>
+                    <tr>
+                        <td>P-0091</td><td>CASO-2026-0148</td><td>Colfondos</td><td>$3.500.000</td><td>$3.200.000</td><td>25/10/2026</td>
+                        <td><span class="estado conciliado">Conciliado</span></td>
+                        <td class="acciones"><button title="Ver">👁</button><button title="Editar">✎</button><button title="Más">⋯</button></td>
+                    </tr>
+                    <tr>
+                        <td>P-0092</td><td>CASO-2026-0141</td><td>Colfondos</td><td>$3.500.000</td><td>$3.200.000</td><td>25/10/2026</td>
+                        <td><span class="estado diferencias">Con diferencias</span></td>
+                        <td class="acciones"><button title="Ver">👁</button><button title="Editar">✎</button><button title="Más">⋯</button></td>
+                    </tr>
+                    <tr>
+                        <td>P-0094</td><td>CASO-2026-0147</td><td>EPS Sura</td><td>$3.500.000</td><td>$3.200.000</td><td>25/10/2026</td>
+                        <td><span class="estado pendiente">Pendiente</span></td>
+                        <td class="acciones"><button title="Ver">👁</button><button title="Editar">✎</button><button title="Más">⋯</button></td>
+                    </tr>
+                    <tr>
+                        <td>P-0099</td><td>CASO-2026-0148</td><td>EPS Sura</td><td>$3.500.000</td><td>$3.200.000</td><td>25/10/2026</td>
+                        <td><span class="estado rechazado">Rechazado</span></td>
+                        <td class="acciones"><button title="Ver">👁</button><button title="Editar">✎</button><button title="Más">⋯</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINACIÓN -->
+            <div class="paginacion">
+                <span>Mostrando 1 - 10 de 154 registros</span>
+                <div class="paginas">
+                    <a href="#">‹</a>
+                    <a href="#" class="activo">1</a>
+                    <a href="#">2</a>
+                    <a href="#">3</a>
+                    <span>...</span>
+                    <a href="#">16</a>
+                    <a href="#">›</a>
+                </div>
+            </div>
+        </main>
+
+    </div>
+</div>
+</body>
+</html>

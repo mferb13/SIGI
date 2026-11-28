@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento de Casos | SIGI</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg,#eaf1fa,#f5f8fd); color: #172b4d; }
+
+        .contenedor { display: flex; min-height: 100vh; }
+
+        /* SIDEBAR */
+        .sidebar { width: 235px; background: #f4f8fd; border-right: 1px solid #dce5f0; padding: 20px 12px; flex-shrink: 0; }
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #174b87;
+            padding: 0 12px 30px;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 12px;
+            color: #71839b;
+            font-weight: normal;
+        }
+        .menu a {
+            display: block;
+            padding: 13px 12px;
+            margin-bottom: 5px;
+            text-decoration: none;
+            color: #344966;
+            border-radius: 9px;
+            font-size: 15px;
+        }
+
+        .menu a:hover,
+        .menu a.activo {
+            background: #dcecff;
+            color: #1457a0;
+        }
+
+        .menu hr { border: none; border-top: 1px solid #dce5f0; margin: 10px 0; }
+        /* CONTENIDO */
+        .contenido { flex: 1; min-width: 0; }
+
+        /* BARRA SUPERIOR */
+        .barra-superior { height: 75px; background: #f7faff; border-bottom: 1px solid #dce5f0; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; gap: 20px; }
+        .buscador { width: 55%; padding: 12px 18px; border: 1px solid #c9d7e8; border-radius: 25px; font-size: 14px; background: #e9f0f9; }
+        .derecha { display: flex; align-items: center; gap: 22px; }
+        .notif { position: relative; font-size: 20px; color: #3b5675; }
+        .notif .badge { position: absolute; top: -8px; right: -10px; background: #e53935; color: white; font-size: 10px; width: 17px; height: 17px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .usuario { display: flex; align-items: center; gap: 10px; padding-left: 20px; border-left: 1px solid #dce5f0; font-size: 14px; font-weight: bold; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; background: #174b87; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .usuario span { display: block; color: #71839b; font-size: 12px; font-weight: normal; }
+
+        /* MAIN */
+        main { padding: 25px 30px; }
+        .encabezado h1 { font-size: 28px; color: #0f2a4d; margin-bottom: 4px; }
+        .encabezado p { color: #344966; margin-bottom: 14px; }
+
+        /* FILTROS */
+        .filtros { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 18px; }
+        .filtros .campo { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 160px; }
+        .filtros label { font-size: 14px; }
+        .filtros input, .filtros select { padding: 9px 10px; border: 1px solid #c9d7e8; border-radius: 7px; font-size: 14px; background: #f7faff; }
+        .filtros .botones { display: flex; gap: 10px; }
+        .btn-limpiar { background: white; color: #37516d; border: 1px solid #c9d7e8; padding: 10px 18px; border-radius: 7px; cursor: pointer; }
+        .btn-buscar { background: #1a66d6; color: white; border: none; padding: 10px 20px; border-radius: 7px; font-weight: bold; cursor: pointer; }
+
+        /* TARJETA DETALLE */
+        .tarjeta { background: white; border: 1px solid #dce5f0; border-radius: 14px; padding: 20px 18px; box-shadow: 0 3px 8px rgba(30,60,100,.05); }
+        .detalle-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+        .detalle-head h2 { font-size: 20px; color: #0f2a4d; }
+        .estado-actual { background: #e6b422; color: white; padding: 6px 14px; border-radius: 16px; font-size: 14px; }
+
+        .detalle-body { display: flex; gap: 30px; flex-wrap: wrap; }
+
+        /* LÍNEA DE TIEMPO */
+        .timeline { flex: 1; min-width: 480px; list-style: none; position: relative; }
+        .paso { display: flex; gap: 14px; position: relative; padding-bottom: 14px; min-height: 44px; }
+        .paso::before { content: ""; position: absolute; left: 12px; top: 26px; bottom: -4px; width: 2px; background: #cfdbea; }
+        .paso:last-child::before { display: none; }
+        .paso.completado::before { background: #2e9e4f; }
+        .marcador { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #cfdbea; background: white; flex-shrink: 0; z-index: 1; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
+        .paso.completado .marcador { background: #2e9e4f; border-color: #2e9e4f; }
+        .paso.actual .marcador { background: #1a66d6; border-color: #1a66d6; }
+        .paso-titulo { width: 220px; font-size: 17px; flex-shrink: 0; padding-top: 2px; }
+        .paso-info { font-size: 14px; line-height: 1.5; padding-top: 2px; }
+        .paso-info .fila { display: flex; gap: 18px; }
+        .paso-info .fecha { width: 80px; flex-shrink: 0; }
+        .pendiente { margin-top: 6px; color: #d79a00; }
+        .pendiente span { color: #172b4d; }
+        .pendiente::before { content: "●"; margin-right: 6px; }
+
+        /* INFO ADICIONAL */
+        .info { width: 280px; font-size: 14px; }
+        .info h3 { font-size: 15px; margin-bottom: 10px; color: #0f2a4d; }
+        .info dt { margin-top: 10px; color: #344966; }
+        .info dd { font-size: 15px; }
+
+        /* PAGINACIÓN */
+        .paginacion { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid #dce5f0; border-radius: 12px; padding: 14px 20px; margin-top: 18px; font-size: 14px; flex-wrap: wrap; gap: 10px; }
+        .paginas { display: flex; align-items: center; gap: 8px; }
+        .paginas a { text-decoration: none; color: #344966; padding: 6px 11px; border-radius: 6px; }
+        .paginas a.activo { background: #1a66d6; color: white; }
+        .paginas a:hover:not(.activo) { background: #dcecff; }
+
+        @media (max-width: 700px) {
+            .contenedor { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .menu { display: flex; flex-wrap: wrap; }
+            .barra-superior { height: auto; padding: 15px; flex-wrap: wrap; }
+            .buscador { width: 100%; }
+            main { padding: 18px; }
+            .timeline { min-width: 0; }
+            .paso { flex-wrap: wrap; }
+            .paso-titulo { width: 100%; }
+            .info { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div class="contenedor">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            ♥ INTEK
+            <span>SALUD | SIGI</span>
+        </div>
+        <nav class="menu">
+            <a href="/"><span class="ico"></span> Panel principal</a>
+            <a href="/casos"><span class="ico"></span> Casos</a>
+            <a href="/incapacidades"><span class="ico"></span> Incapacidades</a>
+            <a href="/licencias"><span class="ico"></span> Licencias</a>
+            <a href="/colaboradores"><span class="ico"></span> Colaboradores</a>
+            <a href="/documentos"><span class="ico"></span> Documentos</a>
+            <a href="/seguimiento" class="activo"><span class="ico">◉</span> Seguimiento</a>
+            <a href="/gestion-cobros"><span class="ico"></span> Gestión de cobros</a>
+            <a href="/pagos"><span class="ico"></span> Pagos</a>
+            <a href="/conciliaciones"><span class="ico"></span> Conciliaciones</a>
+            <a href="/alertas"><span class="ico"></span> Alertas</a>
+            <a href="/reportes"><span class="ico"></span> Reportes</a>
+            <hr>
+            <a href="/administracion"><span class="ico"></span> Administración</a>
+            <a href="/configuracion"><span class="ico"></span> Configuración</a>
+        </nav>
+    </aside>
+
+    <div class="contenido">
+
+        <!-- BARRA SUPERIOR -->
+        <header class="barra-superior">
+            <input type="search" class="buscador" placeholder="Buscar en INTEK Salud...">
+            <div class="derecha">
+                <div class="notif">✉<span class="badge">1</span></div>
+                <div class="notif">🔔<span class="badge">3</span></div>
+                <div class="usuario">
+                    <div class="avatar">MR</div>
+                    <div>María Rodríguez<span>Administradora</span></div>
+                    <span>⌄</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <header class="encabezado">
+                <h1>Seguimiento de Casos</h1>
+                <p>Consulta el estado y avance de los casos.</p>
+            </header>
+
+            <!-- FILTROS -->
+            <form class="filtros">
+                <div class="campo">
+                    <label>Número de caso</label>
+                    <input type="text" value="1052">
+                </div>
+                <div class="campo">
+                    <label>Colaborador</label>
+                    <select>
+                        <option>Ana Torres García</option>
+                        <option>Carlos Gómez R.</option>
+                        <option>Laura Pérez D.</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Estado</label>
+                    <select>
+                        <option>En revisión</option>
+                        <option>Radicado</option>
+                        <option>Aprobado</option>
+                        <option>Rechazado</option>
+                        <option>Cerrado</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Rango de fechas (Desde - Hasta)</label>
+                    <input type="date">
+                </div>
+                <div class="botones">
+                    <button type="reset" class="btn-limpiar">Limpiar</button>
+                    <button type="submit" class="btn-buscar">Buscar</button>
+                </div>
+            </form>
+
+            <!-- DETALLE DEL CASO -->
+            <section class="tarjeta">
+                <div class="detalle-head">
+                    <h2>Detalles del caso #1052</h2>
+                    <span class="estado-actual">Estado actual: En revisión</span>
+                </div>
+
+                <div class="detalle-body">
+
+                    <ul class="timeline">
+                        <li class="paso completado">
+                            <div class="marcador">✓</div>
+                            <div class="paso-titulo">1. Registro del caso</div>
+                            <div class="paso-info">
+                                <div class="fila"><span class="fecha">01/10/2026</span><span>By: María Rodríguez</span></div>
+                                <div class="fila"><span class="fecha">01/10/2026</span><span>Caso creado, documentos preliminares cargados.</span></div>
+                            </div>
+                        </li>
+
+                        <li class="paso completado">
+                            <div class="marcador">✓</div>
+                            <div class="paso-titulo">2. Radicación</div>
+                            <div class="paso-info">
+                                <div class="fila"><span class="fecha">02/10/2026</span><span>By: Carlos Gómez</span></div>
+                                <div class="fila"><span class="fecha">02/10/2026</span><span>Radicado ante EPS Sura con N° 87901.</span></div>
+                            </div>
+                        </li>
+
+                        <li class="paso actual">
+                            <div class="marcador"></div>
+                            <div class="paso-titulo">3. Revisión Documental</div>
+                            <div class="paso-info">
+                                <div class="fila"><span class="fecha">03/10/2026</span><span>By: Laura Pérez</span></div>
+                                <div class="fila"><span class="fecha">03/10/2026</span><span>En proceso de validación de incapacidad.</span></div>
+                                <div class="pendiente"><span><strong style="color:#d79a00;font-weight:normal">Pendiente:</strong> Validación de certificado médico.</span></div>
+                            </div>
+                        </li>
+
+                        <li class="paso">
+                            <div class="marcador"></div>
+                            <div class="paso-titulo">4. Solicitud de Correcciones</div>
+                            <div class="paso-info">-</div>
+                        </li>
+                        <li class="paso">
+                            <div class="marcador"></div>
+                            <div class="paso-titulo">5. Aprobación / Rechazo</div>
+                            <div class="paso-info">-</div>
+                        </li>
+                        <li class="paso">
+                            <div class="marcador"></div>
+                            <div class="paso-titulo">6. Gestión de Cobro</div>
+                            <div class="paso-info">-</div>
+                        </li>
+                        <li class="paso">
+                            <div class="marcador"></div>
+                            <div class="paso-titulo">7. Pago</div>
+                            <div class="paso-info">-</div>
+                        </li>
+                        <li class="paso">
+                            <div class="marcador"></div>
+                            <div class="paso-titulo">8. Cierre del caso</div>
+                            <div class="paso-info">-</div>
+                        </li>
+                    </ul>
+
+                    <aside class="info">
+                        <h3>Información Adicional</h3>
+                        <dl>
+                            <dt>Colaborador</dt><dd>Ana Torres García (1.053.852.741)</dd>
+                            <dt>Tipo de Novedad</dt><dd>Incapacidad médica</dd>
+                            <dt>Entidad</dt><dd>EPS Sura</dd>
+                            <dt>Responsable Actual</dt><dd>Laura Pérez</dd>
+                            <dt>Fecha de Creación</dt><dd>01/10/2026</dd>
+                            <dt>Última Actualización</dt><dd>03/10/2026</dd>
+                        </dl>
+                    </aside>
+
+                </div>
+            </section>
+
+            <!-- PAGINACIÓN -->
+            <div class="paginacion">
+                <span>Mostrando 1 - 1 de 1 caso encontrado</span>
+                <div class="paginas">
+                    <a href="#">‹</a>
+                    <a href="#" class="activo">1</a>
+                    <a href="#">›</a>
+                </div>
+            </div>
+        </main>
+
+    </div>
+</div>
+</body>
+</html>

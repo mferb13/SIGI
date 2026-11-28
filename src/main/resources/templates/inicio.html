@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio | SIGI</title>
+    <title>Panel principal | INTEK Salud</title>
 
     <style>
         * {
@@ -14,96 +14,630 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            color: #333;
+            background-color: #f1f5fb;
+            color: #172b4d;
         }
 
-        header {
-            background-color: #263b63;
-            color: white;
-            padding: 22px 40px;
+        .contenedor {
+            display: flex;
+            min-height: 100vh;
         }
 
-        header h1 {
-            margin: 0;
+        /* MENÚ LATERAL */
+
+        .sidebar { width: 235px; background: #f4f8fd; border-right: 1px solid #dce5f0; padding: 20px 12px; flex-shrink: 0; }
+
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #174b87;
+            padding: 0 12px 30px;
         }
 
-        main {
-            padding: 40px;
+        .logo span {
+            display: block;
+            font-size: 12px;
+            color: #71839b;
+            font-weight: normal;
         }
 
-        .bienvenida {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 25px;
+        .menu a {
+            display: block;
+            padding: 13px 12px;
+            margin-bottom: 5px;
+            text-decoration: none;
+            color: #344966;
+            border-radius: 9px;
+            font-size: 15px;
         }
 
-        .bienvenida h2 {
-            color: #263b63;
+        .menu a:hover,
+        .menu a.activo {
+            background-color: #dcecff;
+            color: #1457a0;
         }
 
-        .modulos {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        /* CONTENIDO PRINCIPAL */
+
+        .contenido {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* BARRA SUPERIOR */
+        .barra-superior {
+            height: 75px;
+            background: #f7faff;
+            border-bottom: 1px solid #dce5f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
             gap: 20px;
         }
 
-        .modulo {
-            background-color: white;
-            padding: 25px;
-            border-radius: 10px;
-            border-left: 5px solid #4267a5;
+        .buscador {
+            width: 55%;
+            padding: 12px 18px;
+            border: 1px solid #c9d7e8;
+            border-radius: 25px;
+            font-size: 14px;
+            background: #e9f0f9;
         }
 
-        .modulo h3 {
-            color: #263b63;
+        .derecha {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .notif {
+            position: relative;
+            font-size: 20px;
+            color: #3b5675;
+        }
+
+        .notif .badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: #e53935;
+            color: white;
+            font-size: 10px;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .usuario {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 20px;
+            border-left: 1px solid #dce5f0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #174b87;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .usuario span {
+            display: block;
+            color: #71839b;
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        main {
+            padding: 30px;
+        }
+
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 15px;
+        }
+
+        .encabezado h1 {
+            margin: 0 0 7px;
+            font-size: 27px;
+        }
+
+        .encabezado p {
+            margin: 0;
+            color: #71839b;
+        }
+
+        .boton {
+            background-color: #1768c4;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            padding: 13px 18px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* TARJETAS */
+
+        .estadisticas {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .tarjeta {
+            background-color: white;
+            border: 1px solid #e0e8f1;
+            border-radius: 13px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(30, 60, 100, 0.05);
+        }
+
+        .tarjeta p {
+            margin: 0 0 12px;
+            color: #60738d;
+            font-size: 14px;
+        }
+
+        .tarjeta h2 {
+            margin: 0;
+            font-size: 29px;
+            color: #172b4d;
+        }
+
+        .tarjeta small {
+            display: block;
+            margin-top: 8px;
+            color: #71839b;
+        }
+
+        .azul {
+            border-top: 4px solid #3484db;
+        }
+
+        .verde {
+            border-top: 4px solid #48b98a;
+        }
+
+        .morado {
+            border-top: 4px solid #9670d5;
+        }
+
+        .amarillo {
+            border-top: 4px solid #e8bd4c;
+        }
+
+        /* DISTRIBUCIÓN */
+
+        .paneles {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr 0.9fr;
+            gap: 18px;
+            align-items: stretch;
+        }
+
+        .panel {
+            background-color: white;
+            border: 1px solid #e0e8f1;
+            border-radius: 13px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(30, 60, 100, 0.05);
+        }
+
+        .panel h3 {
+            margin: 0 0 20px;
+            font-size: 17px;
+        }
+
+        /* GRÁFICO DE BARRAS */
+
+        .grafico {
+            height: 220px;
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+            border-bottom: 1px solid #dce5f0;
+            padding: 10px 5px 0;
+        }
+
+        .barra {
+            width: 25px;
+            background-color: #4b91df;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .mes {
+            text-align: center;
+            color: #71839b;
+            font-size: 12px;
+            margin-top: 9px;
+        }
+
+        /* GRÁFICO CIRCULAR */
+
+        .distribucion {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .circulo {
+            width: 165px;
+            height: 165px;
+            border-radius: 50%;
+            background: conic-gradient(
+                    #2879d2 0% 52%,
+                    #8052c5 52% 90%,
+                    #71839b 90% 100%
+            );
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .centro {
+            width: 95px;
+            height: 95px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .leyenda {
+            font-size: 13px;
+            line-height: 2;
+            color: #536781;
+        }
+
+        /* ACTIVIDAD RECIENTE */
+
+        .actividad {
+            margin-top: 20px;
+        }
+
+        .actividad-item {
+            padding: 13px 0;
+            border-bottom: 1px solid #edf1f6;
+            font-size: 14px;
+        }
+
+        .actividad-item:last-child {
+            border-bottom: none;
+        }
+
+        /* ASISTENTE */
+
+        .asistente {
+            background-color: #edf5ff;
+            border-radius: 10px;
+            padding: 18px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .asistente button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #216bb5;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* DISEÑO RESPONSIVE */
+
+        @media (max-width: 1100px) {
+            .estadisticas {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .paneles {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .panel-asistente {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .contenedor {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .menu {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .barra-superior {
+                padding: 15px;
+                height: auto;
+                flex-wrap: wrap;
+            }
+
+            .buscador {
+                width: 100%;
+            }
+
+            main {
+                padding: 18px;
+            }
+
+            .estadisticas,
+            .paneles {
+                grid-template-columns: 1fr;
+            }
+
+            .panel-asistente {
+                grid-column: auto;
+            }
+
+            .encabezado {
+                align-items: flex-start;
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<header>
-    <h1>SIGI</h1>
-    <p>Sistema de Gestión de Incapacidades</p>
-</header>
+<div class="contenedor">
 
-<main>
+    <!-- MENÚ LATERAL -->
 
-    <section class="bienvenida">
-        <h2>Bienvenido a SIGI</h2>
-        <p>
-            Sistema para la gestión, seguimiento y control
-            de incapacidades y licencias.
-        </p>
-    </section>
+    <aside class="sidebar">
 
-    <section class="modulos">
+        <div class="logo">
+            ♥ INTEK
+            <span>SALUD | SIGI</span>
+        </div>
 
-        <article class="modulo">
-            <h3>Gestión de casos</h3>
-            <p>Administración de incapacidades y licencias.</p>
-        </article>
+        <nav class="menu">
+            <a href="/" class="activo">Panel principal</a>
+            <a href="/casos">Casos</a>
+            <a href="/incapacidades">Incapacidades</a>
+            <a href="licencias"> Licencias</a>
+            <a href="colaboradores"> Colaboradores</a>
+            <a href="documentos"> Documentos</a>
+            <a href="seguimiento">Seguimiento</a>
+            <a href="gestion-cobros">Gestión de cobros</a>
+            <a href="pagos"> Pagos</a>
+            <a href="conciliaciones">Conciliaciones</a>
+            <a href="alertas">Alertas</a>
+            <a href="reportes">Reportes</a>
+            <a href="administracion">Administración</a>
+            <a href="configuracion">Configuración</a>
+        </nav>
 
-        <article class="modulo">
-            <h3>Documentos</h3>
-            <p>Consulta y gestión de documentos.</p>
-        </article>
+    </aside>
 
-        <article class="modulo">
-            <h3>Seguimiento</h3>
-            <p>Control del estado de los casos.</p>
-        </article>
+    <!-- CONTENIDO -->
 
-        <article class="modulo">
-            <h3>Reportes</h3>
-            <p>Consulta de información y reportes.</p>
-        </article>
+    <div class="contenido">
 
-    </section>
 
-</main>
+        <header class="barra-superior">
+
+            <input
+                    type="search"
+                    class="buscador"
+                    placeholder="Buscar en INTEK Salud..."
+            >
+
+            <div class="derecha">
+
+                <div class="notif">
+                    ✉
+                    <span class="badge">1</span>
+                </div>
+
+                <div class="notif">
+                    🔔
+                    <span class="badge">3</span>
+                </div>
+
+                <div class="usuario">
+                    <div class="avatar">MR</div>
+
+                    <div>
+                        María Rodríguez
+                        <span>Administradora</span>
+                    </div>
+
+                    <span>⌄</span>
+                </div>
+
+            </div>
+
+        </header>
+
+        <main>
+
+            <!-- ENCABEZADO -->
+
+            <section class="encabezado">
+
+                <div>
+                    <h1>Panel principal</h1>
+                    <p>Resumen general del sistema</p>
+                </div>
+
+                <button class="boton">
+                    + Registrar nuevo caso
+                </button>
+
+            </section>
+
+            <!-- ESTADÍSTICAS -->
+
+            <section class="estadisticas">
+
+                <article class="tarjeta azul">
+                    <p>Casos registrados</p>
+                    <h2>1.248</h2>
+                    <small>Ver todos los casos</small>
+                </article>
+
+                <article class="tarjeta verde">
+                    <p>Incapacidades activas</p>
+                    <h2>342</h2>
+                    <small>Ver incapacidades</small>
+                </article>
+
+                <article class="tarjeta morado">
+                    <p>Licencias registradas</p>
+                    <h2>276</h2>
+                    <small>Ver licencias</small>
+                </article>
+
+                <article class="tarjeta amarillo">
+                    <p>Casos pendientes</p>
+                    <h2>120</h2>
+                    <small>Revisar pendientes</small>
+                </article>
+
+            </section>
+
+            <!-- PANELES -->
+
+            <section class="paneles">
+
+                <article class="panel">
+
+                    <h3>Casos registrados por mes</h3>
+
+                    <div class="grafico">
+                        <div>
+                            <div class="barra" style="height: 90px;"></div>
+                            <div class="mes">Ene</div>
+                        </div>
+
+                        <div>
+                            <div class="barra" style="height: 105px;"></div>
+                            <div class="mes">Feb</div>
+                        </div>
+
+                        <div>
+                            <div class="barra" style="height: 120px;"></div>
+                            <div class="mes">Mar</div>
+                        </div>
+
+                        <div>
+                            <div class="barra" style="height: 130px;"></div>
+                            <div class="mes">Abr</div>
+                        </div>
+
+                        <div>
+                            <div class="barra" style="height: 155px;"></div>
+                            <div class="mes">May</div>
+                        </div>
+
+                        <div>
+                            <div class="barra" style="height: 175px;"></div>
+                            <div class="mes">Jun</div>
+                        </div>
+                    </div>
+
+                </article>
+
+                <article class="panel">
+
+                    <h3>Distribución de casos</h3>
+
+                    <div class="distribucion">
+
+                        <div class="circulo">
+                            <div class="centro">52%</div>
+                        </div>
+
+                        <div class="leyenda">
+                            🔵 Incapacidades: 52%<br>
+                            🟣 Licencias: 38%<br>
+                            ⚫ Otros: 10%
+                        </div>
+
+                    </div>
+
+                </article>
+
+                <article class="panel panel-asistente">
+
+                    <h3>🤖 Zuri, Asistente Ejecutivo</h3>
+
+                    <div class="asistente">
+                        ¡Hola! Soy Zuri, tu asistente de INTEK Salud.
+
+                        <p>Desde aquí podrás consultar información y recibir recomendaciones para gestionar tus casos.</p>
+
+                        <button type="button">
+                            Revisar prioridades del día
+                        </button>
+                    </div>
+
+                </article>
+
+            </section>
+
+            <!-- ACTIVIDAD -->
+
+            <section class="panel actividad">
+
+                <h3>Actividad reciente</h3>
+
+                <div class="actividad-item">
+                    📁 Nuevo caso registrado
+                </div>
+
+                <div class="actividad-item">
+                    📄 Documento cargado
+                </div>
+
+                <div class="actividad-item">
+                    ✅ Cambio de estado de un caso
+                </div>
+
+                <div class="actividad-item">
+                    💳 Pago registrado
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
 
 </body>
 </html>

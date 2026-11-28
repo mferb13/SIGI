@@ -1,0 +1,683 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casos | INTEK Salud</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f1f5fb;
+            color: #172b4d;
+        }
+
+        .contenedor {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* MENÚ LATERAL */
+
+        .sidebar { width: 235px; background: #f4f8fd; border-right: 1px solid #dce5f0; padding: 20px 12px; flex-shrink: 0; }
+
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #174b87;
+            padding: 0 12px 30px;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 12px;
+            color: #71839b;
+            font-weight: normal;
+        }
+
+        .menu a {
+            display: block;
+            padding: 13px 12px;
+            margin-bottom: 5px;
+            text-decoration: none;
+            color: #344966;
+            border-radius: 9px;
+            font-size: 15px;
+        }
+
+        .menu a:hover,
+        .menu a.activo {
+            background-color: #dcecff;
+            color: #1457a0;
+        }
+
+        /* CONTENIDO */
+
+        .contenido {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* BARRA SUPERIOR */
+        .barra-superior {
+            height: 75px;
+            background: #f7faff;
+            border-bottom: 1px solid #dce5f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            gap: 20px;
+        }
+
+        .buscador {
+            width: 55%;
+            padding: 12px 18px;
+            border: 1px solid #c9d7e8;
+            border-radius: 25px;
+            font-size: 14px;
+            background: #e9f0f9;
+        }
+
+        .derecha {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .notif {
+            position: relative;
+            font-size: 20px;
+            color: #3b5675;
+        }
+
+        .notif .badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: #e53935;
+            color: white;
+            font-size: 10px;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .usuario {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 20px;
+            border-left: 1px solid #dce5f0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #174b87;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .usuario span {
+            display: block;
+            color: #71839b;
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        main {
+            padding: 30px;
+        }
+
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .encabezado h1 {
+            margin: 0 0 7px;
+            font-size: 27px;
+        }
+
+        .encabezado p {
+            margin: 0;
+            color: #71839b;
+        }
+
+        .boton {
+            background-color: #1768c4;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            padding: 13px 18px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* ESTADÍSTICAS */
+
+        .estadisticas {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .estadistica {
+            background-color: white;
+            border: 1px solid #dce5f0;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 3px 8px rgba(30, 60, 100, 0.05);
+        }
+
+        .estadistica p {
+            margin: 0 0 10px;
+            color: #60738d;
+            font-size: 13px;
+        }
+
+        .estadistica h2 {
+            margin: 0;
+            font-size: 23px;
+        }
+
+        /* FILTROS */
+
+        .filtros {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background-color: white;
+            padding: 15px;
+            border: 1px solid #dce5f0;
+            border-radius: 12px;
+            margin-bottom: 18px;
+        }
+
+        .filtros input,
+        .filtros select {
+            flex: 1;
+            min-width: 130px;
+            padding: 11px;
+            border: 1px solid #cbd7e5;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #344966;
+        }
+
+        .boton-limpiar {
+            background-color: #edf3fa;
+            color: #344966;
+            border: 1px solid #cbd7e5;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        /* TABLA */
+
+        .tabla-contenedor {
+            background-color: white;
+            border: 1px solid #dce5f0;
+            border-radius: 12px;
+            overflow-x: auto;
+            box-shadow: 0 3px 8px rgba(30, 60, 100, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1050px;
+        }
+
+        thead {
+            background-color: #eaf1fa;
+        }
+
+        th {
+            padding: 16px 12px;
+            text-align: left;
+            font-size: 13px;
+            color: #263b5b;
+        }
+
+        td {
+            padding: 15px 12px;
+            border-top: 1px solid #e5ebf2;
+            font-size: 13px;
+        }
+
+        tbody tr:hover {
+            background-color: #f7faff;
+        }
+
+        .estado {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .activo {
+            background-color: #d5f4e5;
+            color: #16834d;
+        }
+
+        .pendiente {
+            background-color: #fff0bf;
+            color: #946800;
+        }
+
+        .cerrado {
+            background-color: #e2e8f0;
+            color: #536477;
+        }
+
+        .rechazado {
+            background-color: #ffe0e0;
+            color: #c02f2f;
+        }
+
+        .revision {
+            background-color: #dcecff;
+            color: #1768c4;
+        }
+
+        .acciones {
+            white-space: nowrap;
+        }
+
+        .acciones button {
+            border: none;
+            background: none;
+            font-size: 17px;
+            cursor: pointer;
+            margin-right: 5px;
+            color: #315477;
+        }
+
+        /* PAGINACIÓN */
+
+        .paginacion {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 5px;
+            color: #60738d;
+            font-size: 13px;
+        }
+
+        .paginas button {
+            padding: 9px 12px;
+            margin-left: 4px;
+            border: 1px solid #cbd7e5;
+            border-radius: 7px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .paginas .seleccionada {
+            background-color: #1768c4;
+            color: white;
+        }
+
+        @media (max-width: 1200px) {
+            .estadisticas {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .contenedor {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .menu {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .barra-superior {
+                height: auto;
+                padding: 15px;
+                flex-wrap: wrap;
+            }
+
+            .buscador {
+                width: 100%;
+            }
+
+            main {
+                padding: 18px;
+            }
+
+            .estadisticas {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .encabezado {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .paginacion {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <!-- MENÚ LATERAL -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            ♥ INTEK
+            <span>SALUD | SIGI</span>
+        </div>
+
+        <nav class="menu">
+            <a href="/">Panel principal</a>
+            <a href="/casos" class="activo"> Casos</a>
+            <a href="/incapacidades"> Incapacidades</a>
+            <a href="/licencias"> Licencias</a>
+            <a href="/colaboradores"> Colaboradores</a>
+            <a href="/documentos"> Documentos</a>
+            <a href="/seguimiento"> Seguimiento</a>
+            <a href="/gestion-cobros">Gestión de cobros</a>
+            <a href="/pagos"> Pagos</a>
+            <a href="/conciliaciones">Conciliaciones</a>
+            <a href="/alertas">Alertas</a>
+            <a href="/reportes"> Reportes</a>
+            <a href="/administracion"> Administración</a>
+            <a href="/configuracion">Configuración</a>
+        </nav>
+
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+
+    <div class="contenido">
+
+
+        <header class="barra-superior">
+
+            <input
+                    type="search"
+                    class="buscador"
+                    placeholder="Buscar en INTEK Salud..."
+            >
+
+            <div class="derecha">
+
+                <div class="notif">
+                    ✉
+                    <span class="badge">1</span>
+                </div>
+
+                <div class="notif">
+                    🔔
+                    <span class="badge">3</span>
+                </div>
+
+                <div class="usuario">
+                    <div class="avatar">MR</div>
+
+                    <div>
+                        María Rodríguez
+                        <span>Administradora</span>
+                    </div>
+
+                    <span>⌄</span>
+                </div>
+
+            </div>
+
+        </header>
+
+        <main>
+
+            <section class="encabezado">
+
+                <div>
+                    <h1>Casos</h1>
+                    <p>Administra todos los casos registrados en el sistema.</p>
+                </div>
+
+                <button class="boton" type="button">
+                    + Registrar caso
+                </button>
+
+            </section>
+
+            <!-- ESTADÍSTICAS -->
+
+            <section class="estadisticas">
+
+                <article class="estadistica">
+                    <p>▣ Total casos</p>
+                    <h2>1.248</h2>
+                </article>
+
+                <article class="estadistica">
+                    <p>▣ Activos</p>
+                    <h2>342</h2>
+                </article>
+
+                <article class="estadistica">
+                    <p>▤ En revisión</p>
+                    <h2>120</h2>
+                </article>
+
+                <article class="estadistica">
+                    <p>✓ Aprobados</p>
+                    <h2>685</h2>
+                </article>
+
+                <article class="estadistica">
+                    <p>✕ Rechazados</p>
+                    <h2>45</h2>
+                </article>
+
+                <article class="estadistica">
+                    <p>▰ Pendientes</p>
+                    <h2>56</h2>
+                </article>
+
+            </section>
+
+            <!-- FILTROS -->
+
+            <form class="filtros">
+
+                <input type="text" placeholder="N.º Caso">
+
+                <input type="text" placeholder="Colaborador o documento">
+
+                <select>
+                    <option value="">Tipo de novedad</option>
+                    <option>Incapacidad</option>
+                    <option>Licencia</option>
+                </select>
+
+                <select>
+                    <option value="">Estado</option>
+                    <option>Activo</option>
+                    <option>Pendiente</option>
+                    <option>Cerrado</option>
+                    <option>Rechazado</option>
+                    <option>En revisión</option>
+                </select>
+
+                <input type="date" title="Fecha inicial">
+
+                <input type="date" title="Fecha final">
+
+                <button class="boton-limpiar" type="reset">
+                    Limpiar
+                </button>
+
+                <button class="boton" type="button">
+                    Buscar
+                </button>
+
+            </form>
+
+            <!-- TABLA DE CASOS -->
+
+            <section class="tabla-contenedor">
+
+                <table>
+
+                    <thead>
+                    <tr>
+                        <th>Número de caso</th>
+                        <th>Colaborador</th>
+                        <th>Tipo de novedad</th>
+                        <th>Fecha inicio</th>
+                        <th>Fecha fin</th>
+                        <th>Entidad</th>
+                        <th>Estado</th>
+                        <th>Responsable</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr>
+                        <td>1052</td>
+                        <td>Ana Torres</td>
+                        <td>Incapacidad</td>
+                        <td>01/10/2026</td>
+                        <td>15/10/2026</td>
+                        <td>EPS Sura</td>
+                        <td><span class="estado activo">Activo</span></td>
+                        <td>Laura Gómez</td>
+                        <td class="acciones">👁 ✎ ↓ 🗑</td>
+                    </tr>
+
+                    <tr>
+                        <td>1051</td>
+                        <td>Carlos Gómez</td>
+                        <td>Licencia</td>
+                        <td>20/09/2026</td>
+                        <td>10/10/2026</td>
+                        <td>Compensar</td>
+                        <td><span class="estado pendiente">Pendiente</span></td>
+                        <td>Diego Ruiz</td>
+                        <td class="acciones">👁 ✎ ↓ 🗑</td>
+                    </tr>
+
+                    <tr>
+                        <td>1050</td>
+                        <td>Laura Pérez</td>
+                        <td>Incapacidad</td>
+                        <td>18/09/2026</td>
+                        <td>02/10/2026</td>
+                        <td>Sura</td>
+                        <td><span class="estado cerrado">Cerrado</span></td>
+                        <td>Ana Torres</td>
+                        <td class="acciones">👁 ✎ ↓ 🗑</td>
+                    </tr>
+
+                    <tr>
+                        <td>1049</td>
+                        <td>Daniela Rojas</td>
+                        <td>Licencia</td>
+                        <td>15/09/2026</td>
+                        <td>29/09/2026</td>
+                        <td>Salud Total</td>
+                        <td><span class="estado rechazado">Rechazado</span></td>
+                        <td>Carlos Díaz</td>
+                        <td class="acciones">👁 ✎ ↓ 🗑</td>
+                    </tr>
+
+                    <tr>
+                        <td>1048</td>
+                        <td>Miguel López</td>
+                        <td>Incapacidad</td>
+                        <td>12/09/2026</td>
+                        <td>26/09/2026</td>
+                        <td>EPS Sura</td>
+                        <td><span class="estado activo">Activo</span></td>
+                        <td>Laura Gómez</td>
+                        <td class="acciones">👁 ✎ ↓ 🗑</td>
+                    </tr>
+
+                    <tr>
+                        <td>1047</td>
+                        <td>Sofía Castro</td>
+                        <td>Licencia</td>
+                        <td>05/09/2026</td>
+                        <td>25/09/2026</td>
+                        <td>Sanitas</td>
+                        <td><span class="estado revision">En revisión</span></td>
+                        <td>Diego Ruiz</td>
+                        <td class="acciones">👁 ✎ ↓ 🗑</td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </section>
+
+            <!-- PAGINACIÓN -->
+
+            <section class="paginacion">
+
+                <span>Mostrando 1 - 6 de 1.248 registros</span>
+
+                <div class="paginas">
+                    <button type="button">‹</button>
+                    <button type="button" class="seleccionada">1</button>
+                    <button type="button">2</button>
+                    <button type="button">3</button>
+                    <button type="button">...</button>
+                    <button type="button">250</button>
+                    <button type="button">›</button>
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+</body>
+</html>

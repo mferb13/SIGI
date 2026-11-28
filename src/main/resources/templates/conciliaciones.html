@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conciliaciones | SIGI</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg,#eaf1fa,#f5f8fd); color: #172b4d; }
+
+        .contenedor { display: flex; min-height: 100vh; }
+
+        /* SIDEBAR */
+        .sidebar { width: 235px; background: #f4f8fd; border-right: 1px solid #dce5f0; padding: 20px 12px; flex-shrink: 0; }
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #174b87;
+            padding: 0 12px 30px;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 12px;
+            color: #71839b;
+            font-weight: normal;
+        }
+        .menu a {
+            display: block;
+            padding: 13px 12px;
+            margin-bottom: 5px;
+            text-decoration: none;
+            color: #344966;
+            border-radius: 9px;
+            font-size: 15px;
+        }
+
+        .menu a:hover,
+        .menu a.activo {
+            background: #dcecff;
+            color: #1457a0;
+        }
+
+        .menu hr { border: none; border-top: 1px solid #dce5f0; margin: 10px 0; }
+        /* CONTENIDO */
+        .contenido { flex: 1; min-width: 0; position: relative; }
+
+        /* BARRA SUPERIOR */
+        .barra-superior { height: 75px; background: #f7faff; border-bottom: 1px solid #dce5f0; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; gap: 20px; }
+        .buscador { width: 55%; padding: 12px 18px; border: 1px solid #c9d7e8; border-radius: 25px; font-size: 14px; background: #e9f0f9; }
+        .derecha { display: flex; align-items: center; gap: 22px; }
+        .notif { position: relative; font-size: 20px; color: #3b5675; }
+        .notif .badge { position: absolute; top: -8px; right: -10px; background: #e53935; color: white; font-size: 10px; width: 17px; height: 17px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .usuario { display: flex; align-items: center; gap: 10px; padding-left: 20px; border-left: 1px solid #dce5f0; font-size: 14px; font-weight: bold; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; background: #174b87; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .usuario span { display: block; color: #71839b; font-size: 12px; font-weight: normal; }
+
+        /* MAIN */
+        main { padding: 30px; }
+        .encabezado { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; margin-bottom: 18px; }
+        .encabezado h1 { font-size: 28px; color: #0f2a4d; margin-bottom: 4px; }
+        .encabezado p { color: #344966; }
+        .btn-agregar { background: #1a66d6; color: white; padding: 13px 22px; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
+        .btn-agregar:hover { background: #1453b0; }
+
+        /* RESUMEN */
+        .resumen { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+        .resumen .item { background: #f7faff; border: 1px solid #dce5f0; border-radius: 12px; padding: 14px 18px; box-shadow: 0 3px 8px rgba(30,60,100,.05); }
+        .resumen .item span { display: block; font-size: 17px; color: #172b4d; }
+        .resumen .item strong { font-size: 30px; color: #0f2a4d; }
+        .resumen .item strong.rojo { color: #c62828; }
+        .resumen .item small { display: block; font-size: 13px; color: #52667f; }
+        .resumen .pct { display: inline-block; background: #cdeed6; color: #1f6b38; font-size: 13px; padding: 3px 10px; border-radius: 12px; margin-left: 8px; vertical-align: middle; }
+
+        /* FILTROS */
+        .tarjeta { background: white; border: 1px solid #dce5f0; border-radius: 14px; padding: 14px; box-shadow: 0 3px 8px rgba(30,60,100,.05); }
+        .tarjeta-filtros { margin-bottom: 18px; }
+        .filtros { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 12px; }
+        .filtros .campo { display: flex; flex-direction: column; gap: 3px; }
+        .filtros .campo label { font-size: 12px; color: #52667f; }
+        .filtros select, .filtros input { padding: 10px 12px; border: 1px solid #c9d7e8; border-radius: 8px; font-size: 15px; background: #f7faff; }
+        .filtros select { min-width: 160px; }
+        .filtros .buscar-texto { flex: 1; min-width: 200px; border-radius: 20px; }
+
+        /* TABLA */
+        .tabla-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th { text-align: left; font-size: 15px; padding: 14px 8px; background: #f4f8fd; }
+        td { padding: 12px 8px; font-size: 15px; border-bottom: 1px solid #e5edf6; }
+        tr:last-child td { border-bottom: none; }
+        tr.resaltada td { background: #fdf3d4; border-top: 2px solid #e6b422; border-bottom: 2px solid #e6b422; }
+        tr.resaltada td:first-child { border-left: 2px solid #e6b422; border-radius: 8px 0 0 8px; }
+        .cero { color: #3b6fa8; }
+        .neg { color: #c62828; }
+
+        /* PAGINACIÓN */
+        .paginacion { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid #dce5f0; border-radius: 12px; padding: 14px 20px; margin-top: 18px; font-size: 15px; flex-wrap: wrap; gap: 10px; }
+        .paginas { display: flex; align-items: center; gap: 8px; }
+        .paginas a { text-decoration: none; color: #344966; padding: 6px 12px; border: 1px solid #dce5f0; border-radius: 6px; background: white; }
+        .paginas a.activo { background: #1a66d6; color: white; border-color: #1a66d6; }
+        .paginas a:hover:not(.activo) { background: #dcecff; }
+
+        /* ZURI */
+        .zuri { position: absolute; top: 92px; right: 0; width: 300px; background: #f7faff; border: 1px solid #dce5f0; border-radius: 14px 0 0 14px; box-shadow: 0 6px 20px rgba(30,60,100,.18); z-index: 10; }
+        .zuri-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid #dce5f0; font-weight: bold; color: #0f2a4d; }
+        .zuri-head .bot { font-size: 24px; }
+        .zuri-head .min { margin-left: auto; border: none; background: none; font-size: 20px; cursor: pointer; color: #52667f; }
+        .zuri-body { padding: 14px; }
+        .zuri-msg { background: #dfeaf7; border: 1px solid #c9d7e8; border-radius: 10px; padding: 12px; font-size: 14px; line-height: 1.4; }
+        .zuri-msg strong { display: block; margin-top: 10px; }
+        .zuri-msg ul { margin: 6px 0 0 18px; }
+        .btn-soporte { width: 100%; margin-top: 12px; background: #1560b8; color: white; border: none; padding: 11px; border-radius: 7px; font-size: 15px; cursor: pointer; }
+        .btn-ignorar { width: 100%; margin-top: 8px; background: white; color: #52667f; border: 1px solid #c9d7e8; padding: 10px; border-radius: 7px; font-size: 15px; cursor: pointer; }
+        .zuri.cerrado .zuri-body { display: none; }
+
+        @media (max-width: 1100px) {
+            .zuri { position: static; width: 100%; margin: 0 0 18px; border-radius: 14px; }
+        }
+        @media (max-width: 900px) {
+            .resumen { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 700px) {
+            .contenedor { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .menu { display: flex; flex-wrap: wrap; }
+            .barra-superior { height: auto; padding: 15px; flex-wrap: wrap; }
+            .buscador { width: 100%; }
+            main { padding: 18px; }
+            .encabezado { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<div class="contenedor">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            ♥ INTEK
+            <span>SALUD | SIGI</span>
+        </div>
+        <nav class="menu">
+            <a href="/"><span class="ico"></span> Panel principal</a>
+            <a href="/casos"><span class="ico"></span> Casos</a>
+            <a href="/incapacidades"><span class="ico"></span> Incapacidades</a>
+            <a href="/licencias"><span class="ico"></span> Licencias</a>
+            <a href="/colaboradores"><span class="ico"></span> Colaboradores</a>
+            <a href="/documentos"><span class="ico"></span> Documentos</a>
+            <a href="/seguimiento"><span class="ico"></span> Seguimiento</a>
+            <a href="/gestion-cobros"><span class="ico"></span> Gestión de cobros</a>
+            <a href="/pagos"><span class="ico"></span> Pagos</a>
+            <a href="/conciliaciones" class="activo"><span class="ico"></span> Conciliaciones</a>
+            <a href="alertas"><span class="ico"></span> Alertas</a>
+            <a href="reportes"><span class="ico"></span> Reportes</a>
+            <hr>
+            <a href="administracion"><span class="ico"></span> Administración</a>
+            <a href="configuracion"><span class="ico"></span> Configuración</a>
+        </nav>
+    </aside>
+
+    <div class="contenido">
+
+        <!-- BARRA SUPERIOR -->
+        <header class="barra-superior">
+            <input type="search" class="buscador" placeholder="Buscar en INTEK Salud...">
+            <div class="derecha">
+                <div class="notif">✉<span class="badge">1</span></div>
+                <div class="notif">🔔<span class="badge">3</span></div>
+                <div class="usuario">
+                    <div class="avatar">MR</div>
+                    <div>María Rodríguez<span>Administradora</span></div>
+                    <span>⌄</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <header class="encabezado">
+                <div>
+                    <h1>Conciliaciones</h1>
+                    <p>Compara y valida los valores solicitados frente a los valores efectivamente pagados.</p>
+                </div>
+                <button class="btn-agregar">＋ Nueva conciliación</button>
+            </header>
+
+            <!-- RESUMEN -->
+            <div class="resumen">
+                <div class="item"><span>Total Solicitado</span><strong>$248.600.000</strong><small>248 casos registrados</small></div>
+                <div class="item"><span>Valor Conciliado</span><strong>$212.150.000</strong><span class="pct">85.3%</span><small>182 casos conciliados</small></div>
+                <div class="item"><span>Con Diferencias</span><strong class="rojo">$14.250.000</strong><small>24 casos con diferencias</small></div>
+            </div>
+
+            <!-- FILTROS -->
+            <div class="tarjeta tarjeta-filtros">
+                <form class="filtros">
+                    <div class="campo">
+                        <label>Entidad</label>
+                        <select>
+                            <option>Todos</option>
+                            <option>EPS Sura</option>
+                            <option>Compensar</option>
+                            <option>Sanitas</option>
+                            <option>Salud Total</option>
+                            <option>Nueva EPS</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Estado</label>
+                        <select>
+                            <option>Todos</option>
+                            <option>Conciliado</option>
+                            <option>Con diferencias</option>
+                            <option>Pendiente</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Periodo</label>
+                        <input type="text" value="📅 Octubre 2026">
+                    </div>
+                    <input type="search" class="buscar-texto" placeholder="🔍 Buscar por caso o colaborador...">
+                </form>
+            </div>
+
+            <!-- TABLA -->
+            <div class="tarjeta tabla-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Caso</th>
+                        <th>Colaborador</th>
+                        <th>Entidad</th>
+                        <th>Valor solicitado</th>
+                        <th>Valor pagado</th>
+                        <th>Diferencia</th>
+                        <th>Fecha conciliación</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr><td>C-001</td><td>Ana Torres</td><td>EPS Sura</td><td>$1.250.000</td><td>$1.250.000</td><td class="cero">$0</td><td>12/10/2026</td></tr>
+                    <tr><td>C-002</td><td>Carlos Gómez</td><td>Compensar</td><td>$800.000</td><td>$800.000</td><td class="cero">$0</td><td>28/09/2026</td></tr>
+                    <tr class="resaltada"><td>C-003</td><td>Laura Pérez</td><td>Sanitas</td><td>$1.450.000</td><td>$1.200.000</td><td class="neg">-$250.000</td><td>18/10/2026</td></tr>
+                    <tr><td>C-004</td><td>Daniela Rojas</td><td>Salud Total</td><td>$2.100.000</td><td>$0</td><td class="neg">-$2.100.000</td><td>--</td></tr>
+                    <tr><td>C-005</td><td>Miguel López</td><td>EPS Sura</td><td>$950.000</td><td>$950.000</td><td class="cero">$0</td><td>22/10/2026</td></tr>
+                    <tr><td>C-006</td><td>Valentina Rojas</td><td>Nueva EPS</td><td>$1.120.000</td><td>$1.120.000</td><td class="cero">$0</td><td>15/10/2026</td></tr>
+                    <tr><td>C-007</td><td>Jorge Martínez</td><td>Compensar</td><td>$680.000</td><td>$680.000</td><td class="cero">$0</td><td>05/10/2026</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINACIÓN -->
+            <div class="paginacion">
+                <span>Mostrando 1 - 7 de 248 registros</span>
+                <div class="paginas">
+                    <a href="#">‹</a>
+                    <a href="#" class="activo">1</a>
+                    <a href="#">2</a>
+                    <a href="#">3</a>
+                    <span>...</span>
+                    <a href="#">25</a>
+                    <a href="#">›</a>
+                </div>
+            </div>
+        </main>
+
+        <!-- ASISTENTE ZURI -->
+        <aside class="zuri" id="zuri">
+            <div class="zuri-head">
+                <span class="bot">🤖</span> Zuri, Asistente de Revisión
+                <button class="min" type="button" onclick="document.getElementById('zuri').classList.toggle('cerrado')">−</button>
+            </div>
+            <div class="zuri-body">
+                <div class="zuri-msg">
+                    ¡Hola! Detecté una diferencia de -$250.000 en el caso C-003 (Sanitas) frente al valor solicitado. Te sugiero revisar el soporte de pago antes de aprobar o marcar con diferencias.
+                    <strong>Datos Analizados:</strong>
+                    Objetivo verificados:
+                    <ul>
+                        <li>Valor solicitado: $1.450.000</li>
+                        <li>Valor pagado reportado: $1.200.000</li>
+                        <li>Diferencia: -$250.000</li>
+                        <li>Decisión final: Requiere confirmación humana</li>
+                    </ul>
+                </div>
+                <button class="btn-soporte" type="button">Ver soporte de pago</button>
+                <button class="btn-ignorar" type="button">Ignorar sugerencia</button>
+            </div>
+        </aside>
+
+    </div>
+</div>
+</body>
+</html>

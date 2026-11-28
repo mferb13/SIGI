@@ -1,0 +1,805 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Incapacidades | INTEK Salud</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f5fb;
+            color: #172b4d;
+        }
+
+        /* CONTENEDOR GENERAL */
+
+        .contenedor {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* MENÚ LATERAL */
+
+        .sidebar { width: 235px; background: #f4f8fd; border-right: 1px solid #dce5f0; padding: 20px 12px; flex-shrink: 0; }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #174b87;
+            padding: 0 12px 30px;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 12px;
+            color: #71839b;
+            font-weight: normal;
+        }
+
+        .menu a {
+            display: block;
+            padding: 13px 12px;
+            margin-bottom: 5px;
+            text-decoration: none;
+            color: #344966;
+            border-radius: 9px;
+            font-size: 15px;
+        }
+
+        .menu a:hover,
+        .menu a.activo {
+            background-color: #dcecff;
+            color: #1457a0;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+
+        .contenido {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* BARRA SUPERIOR */
+        .barra-superior {
+            height: 75px;
+            background: #f7faff;
+            border-bottom: 1px solid #dce5f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            gap: 20px;
+        }
+
+        .buscador {
+            width: 55%;
+            padding: 12px 18px;
+            border: 1px solid #c9d7e8;
+            border-radius: 25px;
+            font-size: 14px;
+            background: #e9f0f9;
+        }
+
+        .derecha {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .notif {
+            position: relative;
+            font-size: 20px;
+            color: #3b5675;
+        }
+
+        .notif .badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: #e53935;
+            color: white;
+            font-size: 10px;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .usuario {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 20px;
+            border-left: 1px solid #dce5f0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #174b87;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .usuario span {
+            display: block;
+            color: #71839b;
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        /* ÁREA DEL FORMULARIO */
+
+        main {
+            padding: 30px;
+        }
+
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .encabezado h1 {
+            margin: 0 0 7px;
+            font-size: 27px;
+            color: #174b83;
+        }
+
+        .encabezado p {
+            margin: 0;
+            color: #71839b;
+        }
+
+        /* TARJETAS */
+
+        .tarjeta {
+            background-color: white;
+            border: 1px solid #dce5f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 3px 8px rgba(30, 60, 100, 0.05);
+        }
+
+        .titulo-seccion {
+            color: #1761a0;
+            font-size: 18px;
+            margin-bottom: 22px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5edf6;
+        }
+
+        /* CAMPOS DEL FORMULARIO */
+
+        .formulario {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .campo label {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .campo input,
+        .campo select,
+        .campo textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d5dfeb;
+            border-radius: 7px;
+            outline: none;
+            font-size: 14px;
+            background-color: white;
+        }
+
+        .campo input:focus,
+        .campo select:focus,
+        .campo textarea:focus {
+            border-color: #2685ce;
+        }
+
+        .completo {
+            grid-column: 1 / -1;
+        }
+
+        .campo textarea {
+            resize: vertical;
+            min-height: 85px;
+        }
+
+        /* ASISTENTE ZURI */
+
+        /* ASISTENTE ZURI FLOTANTE */
+
+        .zuri {
+            position: fixed;
+            top: 92px;
+            right: 20px;
+            width: 300px;
+            background: #f7faff;
+            border: 1px solid #dce5f0;
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(30, 60, 100, 0.18);
+            z-index: 1000;
+        }
+
+        .zuri-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-bottom: 1px solid #dce5f0;
+            font-weight: bold;
+            color: #0f2a4d;
+        }
+
+        .zuri-head .bot {
+            font-size: 24px;
+        }
+
+        .zuri-head .min {
+            margin-left: auto;
+            border: none;
+            background: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #52667f;
+            padding: 0;
+        }
+
+        .zuri-body {
+            padding: 14px;
+        }
+
+        .zuri-msg {
+            background: #dfeaf7;
+            border: 1px solid #c9d7e8;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #344966;
+        }
+
+        .btn-soporte {
+            width: 100%;
+            margin-top: 12px;
+            background: #1560b8;
+            color: white;
+        }
+
+        .btn-ignorar {
+            width: 100%;
+            margin-top: 8px;
+            background: white;
+            color: #52667f;
+            border: 1px solid #c9d7e8;
+        }
+
+        .zuri.cerrado .zuri-body {
+            display: none;
+        }
+
+        @media (max-width: 700px) {
+            .zuri {
+                width: calc(100% - 30px);
+                right: 15px;
+                top: auto;
+                bottom: 15px;
+            }
+        }
+
+        /* BOTONES */
+
+        .acciones {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        button {
+            padding: 12px 22px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-limpiar {
+            background-color: #e8eef5;
+            color: #37516d;
+        }
+
+        .btn-guardar {
+            background-color: #176bb1;
+            color: white;
+        }
+
+        .btn-guardar:hover {
+            background-color: #10548e;
+        }
+
+        /* DISEÑO RESPONSIVE */
+
+        @media (max-width: 1200px) {
+            .formulario {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            .contenedor {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .menu {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .barra-superior {
+                height: auto;
+                padding: 15px;
+                flex-wrap: wrap;
+            }
+
+            .buscador {
+                width: 100%;
+            }
+
+            main {
+                padding: 18px;
+            }
+
+            .formulario {
+                grid-template-columns: 1fr;
+            }
+
+            .completo {
+                grid-column: auto;
+            }
+
+            .encabezado {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .acciones {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <!-- MENÚ LATERAL -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            ♥ INTEK
+            <span>SALUD | SIGI</span>
+        </div>
+
+        <nav class="menu">
+            <a href="/"> Panel principal</a>
+            <a href="/casos"> Casos</a>
+            <a href="/incapacidades" class="activo"> Incapacidades</a>
+            <a href="licencias"> Licencias</a>
+            <a href="colaboradores"> Colaboradores</a>
+            <a href="documentos"> Documentos</a>
+            <a href="seguimiento"> Seguimiento</a>
+            <a href="gestion-cobros"> Gestión de cobros</a>
+            <a href="pagos"> Pagos</a>
+            <a href="conciliaciones">Conciliaciones</a>
+            <a href="alertas">Alertas</a>
+            <a href="reportes">Reportes</a>
+            <a href="administracion">Administración</a>
+            <a href="configuracion">Configuración</a>
+        </nav>
+
+    </aside>
+
+    <!-- CONTENIDO -->
+
+    <div class="contenido">
+
+        <!-- BARRA SUPERIOR -->
+
+
+        <header class="barra-superior">
+
+            <input
+                    type="search"
+                    class="buscador"
+                    placeholder="Buscar en INTEK Salud..."
+            >
+
+            <div class="derecha">
+
+                <div class="notif">
+                    ✉
+                    <span class="badge">1</span>
+                </div>
+
+                <div class="notif">
+                    🔔
+                    <span class="badge">3</span>
+                </div>
+
+                <div class="usuario">
+                    <div class="avatar">MR</div>
+
+                    <div>
+                        María Rodríguez
+                        <span>Administradora</span>
+                    </div>
+
+                    <span>⌄</span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- FORMULARIO -->
+
+        <main>
+
+            <header class="encabezado">
+                <div>
+                    <h1>Registro de Incapacidades</h1>
+                    <p>Registra y administra las incapacidades de los colaboradores.</p>
+                </div>
+            </header>
+
+            <form>
+
+                <!-- DATOS DEL COLABORADOR -->
+
+                <section class="tarjeta">
+
+                    <h2 class="titulo-seccion">
+                        01. Datos del colaborador
+                    </h2>
+
+
+                    <div class="formulario">
+
+                        <div class="campo">
+                            <label>Tipo de documento</label>
+                            <select id="tipoDocumento">
+                                <option value="">Seleccionar</option>
+                                <option value="CC">CC</option>
+                                <option value="CE">CE</option>
+                                <option value="TI">TI</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label>Número de documento</label>
+                            <input
+                                    type="text"
+                                    id="documento"
+                                    placeholder="Número de documento"
+                            >
+                            <small id="mensajeColaborador"></small>
+                        </div>
+
+                        <div class="campo">
+                            <label>Nombre completo</label>
+                            <input
+                                    type="text"
+                                    id="nombreCompleto"
+                                    placeholder="Nombre del colaborador"
+                                    readonly
+                            >
+                        </div>
+
+                        <div class="campo">
+                            <label>Área o dependencia</label>
+                            <input
+                                    type="text"
+                                    id="area"
+                                    placeholder="Área"
+                                    readonly
+                            >
+                        </div>
+
+                        <div class="campo">
+                            <label>Cargo</label>
+                            <input
+                                    type="text"
+                                    id="cargo"
+                                    placeholder="Cargo"
+                                    readonly
+                            >
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="campo">
+                        <label>Tipo de incapacidad</label>
+                        <select id="tipoNovedad" name="codigoTipoNovedad" required>
+                            <option value="">Seleccionar</option>
+
+                            <option
+                                    th:each="tipo : ${tiposNovedad}"
+                                    th:value="${tipo.codigo}"
+                                    th:text="${tipo.nombre}">
+                            </option>
+
+                        </select>
+                    </div>
+
+
+                    <div class="campo">
+                            <label>Número de documento</label>
+                            <input type="text" placeholder="Número de documento">
+                        </div>
+
+                        <div class="campo">
+                            <label>Nombre completo</label>
+                            <input type="text" placeholder="Nombre del colaborador">
+                        </div>
+
+                        <div class="campo">
+                            <label>Área o dependencia</label>
+                            <input type="text" placeholder="Área">
+                        </div>
+
+                        <div class="campo">
+                            <label>Cargo</label>
+                            <input type="text" placeholder="Cargo">
+                        </div>
+
+
+                </section>
+
+                <!-- DATOS DE LA INCAPACIDAD -->
+
+                <section class="tarjeta">
+
+                    <h2 class="titulo-seccion">
+                        02. Datos de la incapacidad
+                    </h2>
+
+                    <div class="formulario">
+
+                        <div class="campo">
+                            <label>Número de incapacidad</label>
+                            <input type="text" placeholder="Consecutivo">
+                        </div>
+
+                        <div class="campo">
+                            <label>Fecha de expedición</label>
+                            <input type="date">
+                        </div>
+
+                        <div class="campo">
+                            <label>Fecha de inicio</label>
+                            <input type="date">
+                        </div>
+
+                        <div class="campo">
+                            <label>Fecha final</label>
+                            <input type="date">
+                        </div>
+
+                        <div class="campo">
+                            <label>Número de días</label>
+                            <input type="number" min="1" placeholder="Días">
+                        </div>
+
+                        <div class="campo">
+                            <label>Tipo de incapacidad</label>
+                            <select>
+                                <option value="">Seleccionar</option>
+                                <option>Enfermedad general</option>
+                                <option>Accidente laboral</option>
+                                <option>Enfermedad laboral</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label>Origen de la incapacidad</label>
+                            <select>
+                                <option value="">Seleccionar</option>
+                                <option>Común</option>
+                                <option>Laboral</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label>Entidad (EPS)</label>
+                            <select>
+                                <option value="">Seleccionar entidad</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label>¿Es prórroga?</label>
+                            <select>
+                                <option value="">Seleccionar</option>
+                                <option value="false">No</option>
+                                <option value="true">Sí</option>
+                            </select>
+                        </div>
+
+                        <div class="campo completo">
+                            <label>Observaciones</label>
+                            <textarea placeholder="Escribe observaciones administrativas..."></textarea>
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- BOTONES -->
+
+                    <div class="acciones">
+                        <button type="reset" class="btn-limpiar">
+                            Limpiar
+                        </button>
+
+                        <button type="submit" class="btn-guardar">
+                            Guardar incapacidad
+                        </button>
+                    </div>
+
+                </section>
+
+            </form>
+
+        </main>
+        <!-- ASISTENTE ZURI FLOTANTE -->
+
+        <aside class="zuri" id="zuri">
+
+            <div class="zuri-head">
+                <span class="bot">🤖</span>
+
+                Zuri, Asistente Inteligente
+
+                <button
+                        class="min"
+                        type="button"
+                        onclick="document.getElementById('zuri').classList.toggle('cerrado')">
+                    −
+                </button>
+            </div>
+
+            <div class="zuri-body">
+
+                <div class="zuri-msg">
+                    ¡Hola! Soy Zuri, tu asistente de INTEK Salud.
+
+                    <p style="margin-top: 10px;">
+                        Estoy aquí para ayudarte con el registro de incapacidades.
+                        Próximamente podré analizar documentos, extraer información
+                        y ofrecer recomendaciones para diligenciar los formularios.
+                    </p>
+                </div>
+
+                <button type="button" class="btn-soporte">
+                    Consultar asistencia
+                </button>
+
+                <button type="button" class="btn-ignorar">
+                    Cerrar asistente
+                </button>
+
+            </div>
+
+        </aside>
+    </div>
+
+</div>
+
+<script>
+
+    const documento = document.getElementById("documento");
+
+    documento.addEventListener("change", buscarColaborador);
+
+    async function buscarColaborador() {
+
+        const numeroDocumento = documento.value.trim();
+        const mensaje = document.getElementById("mensajeColaborador");
+
+        const nombre = document.getElementById("nombreCompleto");
+        const area = document.getElementById("area");
+        const cargo = document.getElementById("cargo");
+
+        nombre.value = "";
+        area.value = "";
+        cargo.value = "";
+
+        if (numeroDocumento === "") {
+            mensaje.textContent = "";
+            return;
+        }
+
+        mensaje.textContent = "Buscando colaborador...";
+
+        try {
+
+            const respuesta = await fetch(
+                "/api/colaboradores/buscar?documento=" +
+                encodeURIComponent(numeroDocumento)
+            );
+
+            if (respuesta.status === 404) {
+                mensaje.textContent = "No se encontró el colaborador.";
+                return;
+            }
+
+            if (!respuesta.ok) {
+                throw new Error("Error al consultar el colaborador");
+            }
+
+            const colaborador = await respuesta.json();
+
+            nombre.value = colaborador.nombreCompleto || "";
+            area.value = colaborador.area || "";
+            cargo.value = colaborador.cargo || "";
+
+            mensaje.textContent = "Colaborador encontrado.";
+
+        } catch (error) {
+
+            mensaje.textContent = "No fue posible realizar la búsqueda.";
+
+            console.error(error);
+        }
+    }
+    document.querySelector(".btn-ignorar").addEventListener("click", function () {
+        document.getElementById("zuri").classList.add("cerrado");
+    });
+
+</script>
+</body>
+</html>
+
+</body>
+</html>

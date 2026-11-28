@@ -1,0 +1,793 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Licencias | INTEK Salud</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f5fb;
+            color: #172b4d;
+        }
+
+        .contenedor {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* MENÚ LATERAL */
+
+        .sidebar { width: 235px; background: #f4f8fd; border-right: 1px solid #dce5f0; padding: 20px 12px; flex-shrink: 0; }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #174b87;
+            padding: 0 12px 30px;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 12px;
+            color: #71839b;
+            font-weight: normal;
+        }
+
+        .menu a {
+            display: block;
+            padding: 13px 12px;
+            margin-bottom: 5px;
+            text-decoration: none;
+            color: #344966;
+            border-radius: 9px;
+            font-size: 15px;
+        }
+
+        .menu a:hover,
+        .menu a.activo {
+            background: #dcecff;
+            color: #1457a0;
+        }
+
+        /* CONTENIDO */
+
+        .contenido {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* BARRA SUPERIOR */
+        .barra-superior {
+            height: 75px;
+            background: #f7faff;
+            border-bottom: 1px solid #dce5f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            gap: 20px;
+        }
+
+        .buscador {
+            width: 55%;
+            padding: 12px 18px;
+            border: 1px solid #c9d7e8;
+            border-radius: 25px;
+            font-size: 14px;
+            background: #e9f0f9;
+        }
+
+        .derecha {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .notif {
+            position: relative;
+            font-size: 20px;
+            color: #3b5675;
+        }
+
+        .notif .badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: #e53935;
+            color: white;
+            font-size: 10px;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .usuario {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 20px;
+            border-left: 1px solid #dce5f0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #174b87;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .usuario span {
+            display: block;
+            color: #71839b;
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        main {
+            padding: 30px;
+        }
+
+        /* ENCABEZADO */
+
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            gap: 15px;
+        }
+
+        .encabezado h1 {
+            font-size: 27px;
+            color: #174b83;
+            margin-bottom: 7px;
+        }
+
+        .encabezado p {
+            color: #71839b;
+        }
+
+        .btn-nuevo {
+            background: #176bb1;
+            color: white;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* INDICADORES */
+
+        .estadisticas {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .estadistica {
+            background: white;
+            border: 1px solid #dce5f0;
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 6px rgba(30, 60, 100, 0.04);
+        }
+
+        .icono {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .azul { background: #e1efff; color: #2675ba; }
+        .verde { background: #e0f5e7; color: #239653; }
+        .amarillo { background: #fff3d5; color: #c58a17; }
+        .rojo { background: #fce6e6; color: #bd5151; }
+        .celeste { background: #e1f3fa; color: #3992b6; }
+
+        .estadistica p {
+            font-size: 12px;
+            color: #71839b;
+        }
+
+        .estadistica strong {
+            font-size: 19px;
+            color: #19365b;
+        }
+
+        /* TARJETAS */
+
+        .tarjeta {
+            background: white;
+            border: 1px solid #dce5f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 3px 8px rgba(30, 60, 100, 0.05);
+        }
+
+        /* FILTROS */
+
+        .filtros {
+            display: grid;
+            grid-template-columns: 1.2fr 1.2fr 1fr 1.4fr;
+            gap: 16px;
+            align-items: end;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .campo label {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .campo input,
+        .campo select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #d5dfeb;
+            border-radius: 7px;
+            background: white;
+            font-size: 13px;
+            color: #344966;
+        }
+
+        .acciones-filtro {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            grid-column: 1 / -1;
+        }
+
+        .btn-limpiar,
+        .btn-buscar {
+            padding: 11px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-limpiar {
+            background: white;
+            border: 1px solid #cbd8e6;
+            color: #37516d;
+        }
+
+        .btn-buscar {
+            background: #176bb1;
+            color: white;
+            border: none;
+        }
+
+        /* TABLA */
+
+        .tabla-contenedor {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        thead {
+            background: #f3f7fc;
+        }
+
+        th {
+            text-align: left;
+            padding: 14px 10px;
+            font-size: 12px;
+            color: #344966;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 10px;
+            border-bottom: 1px solid #e1e8f0;
+            font-size: 13px;
+            color: #263c58;
+        }
+
+        tbody tr:hover {
+            background: #f8fbff;
+        }
+
+        .estado {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .estado-activa {
+            background: #d9f3e2;
+            color: #19834a;
+        }
+
+        .estado-iniciar {
+            background: #fff0c2;
+            color: #a77a0b;
+        }
+
+        .estado-finalizada {
+            background: #e2eaf2;
+            color: #52677e;
+        }
+
+        .botones-tabla {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-icono {
+            border: 1px solid #d0dce9;
+            background: #f5f9fd;
+            color: #42617e;
+            padding: 7px 9px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* PAGINACIÓN */
+
+        .paginacion {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #61758e;
+            font-size: 13px;
+        }
+
+        .paginas {
+            display: flex;
+            gap: 7px;
+        }
+
+        .paginas button {
+            border: none;
+            background: transparent;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .paginas .seleccionada {
+            background: #176bb1;
+            color: white;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1100px) {
+            .estadisticas {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .filtros {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .contenedor {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .menu {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .barra-superior {
+                height: auto;
+                padding: 15px;
+                flex-wrap: wrap;
+            }
+
+            .buscador {
+                width: 100%;
+            }
+
+            main {
+                padding: 18px;
+            }
+
+            .encabezado {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .estadisticas {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filtros {
+                grid-template-columns: 1fr;
+            }
+
+            .acciones-filtro {
+                grid-column: auto;
+            }
+
+            .paginacion {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <!-- MENÚ LATERAL -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            ♥ INTEK
+            <span>SALUD | SIGI</span>
+        </div>
+
+        <nav class="menu">
+            <a href="/">Panel principal</a>
+            <a href="/casos">Casos</a>
+            <a href="/incapacidades">Incapacidades</a>
+            <a href="/licencias" class="activo"> Licencias</a>
+            <a href="colaboradores">Colaboradores</a>
+            <a href="documentos">Documentos</a>
+            <a href="/seguimiento">Seguimiento</a>
+            <a href="gestion-cobros">Gestión de cobros</a>
+            <a href="pagos">Pagos</a>
+            <a href="conciliaciones">Conciliaciones</a>
+            <a href="alertas">Alertas</a>
+            <a href="reportes">Reportes</a>
+            <a href="administracion">Administración</a>
+            <a href="configuracion">Configuración</a>
+        </nav>
+
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+
+    <div class="contenido">
+
+
+        <header class="barra-superior">
+
+            <input
+                    type="search"
+                    class="buscador"
+                    placeholder="Buscar en INTEK Salud..."
+            >
+
+            <div class="derecha">
+
+                <div class="notif">
+                    ✉
+                    <span class="badge">1</span>
+                </div>
+
+                <div class="notif">
+                    🔔
+                    <span class="badge">3</span>
+                </div>
+
+                <div class="usuario">
+                    <div class="avatar">MR</div>
+
+                    <div>
+                        María Rodríguez
+                        <span>Administradora</span>
+                    </div>
+
+                    <span>⌄</span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <main>
+
+            <!-- ENCABEZADO -->
+
+            <header class="encabezado">
+
+                <div>
+                    <h1>Gestión de Licencias</h1>
+                    <p>Administra las licencias del personal.</p>
+                </div>
+
+                <button type="button" class="btn-nuevo">
+                    + Registrar licencia
+                </button>
+
+            </header>
+
+            <!-- INDICADORES -->
+
+            <section class="estadisticas">
+
+                <div class="estadistica">
+                    <div class="icono azul">♙</div>
+                    <div>
+                        <p>Total licencias</p>
+                        <strong>276</strong>
+                    </div>
+                </div>
+
+                <div class="estadistica">
+                    <div class="icono verde">●</div>
+                    <div>
+                        <p>Activas</p>
+                        <strong>85</strong>
+                    </div>
+                </div>
+
+                <div class="estadistica">
+                    <div class="icono celeste">➜</div>
+                    <div>
+                        <p>Por iniciar</p>
+                        <strong>40</strong>
+                    </div>
+                </div>
+
+                <div class="estadistica">
+                    <div class="icono rojo">✓</div>
+                    <div>
+                        <p>Finalizadas</p>
+                        <strong>150</strong>
+                    </div>
+                </div>
+
+                <div class="estadistica">
+                    <div class="icono amarillo">◷</div>
+                    <div>
+                        <p>En revisión</p>
+                        <strong>1</strong>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- FILTROS -->
+
+            <section class="tarjeta">
+
+                <div class="filtros">
+
+                    <div class="campo">
+                        <label>Colaborador</label>
+                        <input type="text" placeholder="Nombre del colaborador">
+                    </div>
+
+                    <div class="campo">
+                        <label>Tipo de licencia</label>
+                        <select>
+                            <option value="">Todos los tipos</option>
+                            <option>Licencia de maternidad</option>
+                            <option>Licencia de paternidad</option>
+                            <option>Licencia parental</option>
+                            <option>Licencia por calamidad</option>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label>Estado</label>
+                        <select>
+                            <option value="">Todos los estados</option>
+                            <option>Activa</option>
+                            <option>Por iniciar</option>
+                            <option>Finalizada</option>
+                            <option>En revisión</option>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label>Rango de fechas</label>
+                        <input type="text" placeholder="Desde - Hasta">
+                    </div>
+
+                    <div class="acciones-filtro">
+                        <button type="reset" class="btn-limpiar">Limpiar</button>
+                        <button type="button" class="btn-buscar">Buscar</button>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- TABLA DE LICENCIAS -->
+
+            <section class="tarjeta">
+
+                <div class="tabla-contenedor">
+
+                    <table>
+
+                        <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Colaborador</th>
+                            <th>Tipo</th>
+                            <th>Fecha de inicio</th>
+                            <th>Fecha de finalización</th>
+                            <th>Número de días</th>
+                            <th>Entidad responsable</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr>
+                            <td>L-001</td>
+                            <td>Valentina Rojas</td>
+                            <td>Licencia de maternidad</td>
+                            <td>01/09/2026</td>
+                            <td>30/11/2026</td>
+                            <td>126</td>
+                            <td>EPS Sura</td>
+                            <td><span class="estado estado-activa">Activa</span></td>
+                            <td>
+                                <div class="botones-tabla">
+                                    <button class="btn-icono" title="Editar">✎</button>
+                                    <button class="btn-icono" title="Historial">◷</button>
+                                    <button class="btn-icono" title="Eliminar">▤</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>L-002</td>
+                            <td>Carlos Gómez</td>
+                            <td>Licencia de paternidad</td>
+                            <td>15/09/2026</td>
+                            <td>22/09/2026</td>
+                            <td>8</td>
+                            <td>Compensar</td>
+                            <td><span class="estado estado-activa">Activa</span></td>
+                            <td>
+                                <div class="botones-tabla">
+                                    <button class="btn-icono" title="Editar">✎</button>
+                                    <button class="btn-icono" title="Historial">◷</button>
+                                    <button class="btn-icono" title="Eliminar">▤</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>L-003</td>
+                            <td>Laura Pérez</td>
+                            <td>Licencia parental</td>
+                            <td>01/10/2026</td>
+                            <td>30/11/2026</td>
+                            <td>61</td>
+                            <td>Sura</td>
+                            <td><span class="estado estado-iniciar">Por iniciar</span></td>
+                            <td>
+                                <div class="botones-tabla">
+                                    <button class="btn-icono" title="Editar">✎</button>
+                                    <button class="btn-icono" title="Historial">◷</button>
+                                    <button class="btn-icono" title="Eliminar">▤</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>L-004</td>
+                            <td>Andrés Martínez</td>
+                            <td>Licencia por calamidad</td>
+                            <td>25/07/2026</td>
+                            <td>28/07/2026</td>
+                            <td>4</td>
+                            <td>N/A</td>
+                            <td><span class="estado estado-finalizada">Finalizada</span></td>
+                            <td>
+                                <div class="botones-tabla">
+                                    <button class="btn-icono" title="Editar">✎</button>
+                                    <button class="btn-icono" title="Historial">◷</button>
+                                    <button class="btn-icono" title="Eliminar">▤</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>L-005</td>
+                            <td>María Sánchez</td>
+                            <td>Licencia de maternidad</td>
+                            <td>10/06/2026</td>
+                            <td>13/10/2026</td>
+                            <td>126</td>
+                            <td>Sanitas</td>
+                            <td><span class="estado estado-activa">Activa</span></td>
+                            <td>
+                                <div class="botones-tabla">
+                                    <button class="btn-icono" title="Editar">✎</button>
+                                    <button class="btn-icono" title="Historial">◷</button>
+                                    <button class="btn-icono" title="Eliminar">▤</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+            <!-- PAGINACIÓN -->
+
+            <section class="tarjeta paginacion">
+
+                <span>Mostrando 1 - 5 de 276 registros</span>
+
+                <div class="paginas">
+                    <button>‹</button>
+                    <button class="seleccionada">1</button>
+                    <button>2</button>
+                    <button>3</button>
+                    <button>...</button>
+                    <button>56</button>
+                    <button>›</button>
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+</body>
+</html>
